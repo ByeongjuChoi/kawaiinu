@@ -11,5 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserFeedDTO {
 	private String usereid;
-	private Long feedid;
+	private String feedid;
 }

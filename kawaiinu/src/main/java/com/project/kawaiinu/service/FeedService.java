@@ -13,12 +13,12 @@ public interface FeedService {
 	public List<CommentsDTO> addCommentToFeed(CommentsDTO commentsDTO);
 	public List<FeedDTO> myFeedSelect(String userid);
 	public List<FeedDTO> feedSelectAll();
-	public FeedWithCommentsDTO getFeedWithComments(String userid, Long feedid);
-	public void toggleLike(String userid, Long feedid);
-	public long getFeedLikeCount(Long feedid);
-	public void deleteFeed(Long feedid);
+	public FeedWithCommentsDTO getFeedWithComments(String userid, String feedid);
+	public void toggleLike(String userid, String feedid);
+	public long getFeedLikeCount(String feedid);
+	public void deleteFeed(String feedid);
 	public void deleteComment(CommentsDTO commentsDTO);
 	
 	public void saveFeed(FeedEntity feedEntity);
-	public FeedEntity findFeedById(Long feedId);
+	public FeedEntity findFeedById(String feedId);
 }

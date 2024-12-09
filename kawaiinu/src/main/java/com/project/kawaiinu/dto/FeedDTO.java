@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FeedDTO {
 	
-	private Long feedid;	// 피드 아이디
+	private String feedid;	// 피드 아이디
 	private String userid;	// 유저 아이디
 	
 	@NotBlank(message = "이미지를 넣어주세요.")
@@ -30,7 +30,7 @@ public class FeedDTO {
 	private int feedstatus;		// 0활성화, 1비활성화
 	
 	// 생성자 추가
-    public FeedDTO(Long feedid, LocalDateTime feedcreatedate, Integer feedlike, int feedstatus, String picture, String userid) {
+    public FeedDTO(String feedid, LocalDateTime feedcreatedate, Integer feedlike, int feedstatus, String picture, String userid) {
         this.feedid = feedid;
         this.feedcreatedate = feedcreatedate;
         this.feedlike = feedlike;

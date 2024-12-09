@@ -58,17 +58,21 @@ public class FeedController {
 	
 	// Feed Delete
 	// 게시글 삭제
-	@DeleteMapping("delete/{feedId}")
-    public ResponseEntity<Void> deleteFeed(@PathVariable Long feedId) {
+	@DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteFeed(@RequestBody Map<String, String> feedInfo) {
+		
+		String feedId = feedInfo.get("feedid");
+		
         feedService.deleteFeed(feedId);
         return ResponseEntity.noContent().build(); // 삭제 성공 시 204 No Content 반환
     }
 	
 	// MyFeed情報照会
 	// 내 피드 정보 조회
-	@GetMapping("/myFeedSelect")
-	public List<FeedDTO> myFeedSelect(String userid) {
-		return feedService.myFeedSelect(userid);
+	@PostMapping("/myFeedSelect")
+	public List<FeedDTO> myFeedSelect(@RequestBody Map<String, String> userInfo) {
+		String userId = userInfo.get("userid");
+		return feedService.myFeedSelect(userId);
 	}
 	
 	// 全体Feed情報照会
@@ -101,10 +105,11 @@ public class FeedController {
 	}
 	
 	// 피드 공개/비공개 상태 변경
-    @PutMapping("/updateFeedStatus/{feedId}")
-    public ResponseEntity<?> updateFeedStatus(@PathVariable Long feedId, @RequestBody Map<String, String> userInfo) {
+    @PutMapping("/updateFeedStatus")
+    public ResponseEntity<?> updateFeedStatus(@RequestBody Map<String, String> userFeedInfo) {
     	
-    	String userid = userInfo.get("userid");
+    	String feedId = userFeedInfo.get("feedid");
+    	String userid = userFeedInfo.get("userid");
     	// 해당 userId에 맞는 사용자 찾기
         UserEntity user = userRepository.findById(userid)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
@@ -137,9 +142,10 @@ public class FeedController {
 
 	// いいねカウント照会
 	// 좋아요 갯수 조회
-	@GetMapping("/getFeedLikeCount/{feedid}")
-	public ResponseEntity<Long> getFeedLikeCount(@PathVariable Long feedid) {
-	    long likeCount = feedService.getFeedLikeCount(feedid);
+	@PostMapping("/getFeedLikeCount")
+	public ResponseEntity<Long> getFeedLikeCount(@RequestBody Map<String, String> feedInfo) {
+		String feedId = feedInfo.get("feedid");
+	    long likeCount = feedService.getFeedLikeCount(feedId);
 	    return ResponseEntity.ok(likeCount);
 	}
 }

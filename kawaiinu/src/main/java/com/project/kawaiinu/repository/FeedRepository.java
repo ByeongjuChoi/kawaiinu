@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.project.kawaiinu.entity.FeedEntity;
 
-public interface FeedRepository extends JpaRepository<FeedEntity, Long> {
+public interface FeedRepository extends JpaRepository<FeedEntity, String> {
 
 	// 내 피드 정보 조회
 	@Query(value = "SELECT a.feedid "

@@ -85,21 +85,24 @@ public class UserController {
 	
 	// ユーザー情報照会	
 	// 유저 정보 조회
-	@GetMapping("/userInfoSelect")
-	public List<UserDTO> userInfoSelect(String useremail) {
-		return userService.userInfoSelect(useremail);
+	@PostMapping("/userInfoSelect")
+	public List<UserDTO> userInfoSelect(@RequestBody Map<String, String> useremail) {
+		String userEmail = useremail.get("useremail");
+		return userService.userInfoSelect(userEmail);
 	}
 	
 	// 펫 정보 조회
-	@GetMapping("/userPetInfoSelect")
-	public List<UserPetDTO> userPetInfoSelect(String useremail) {
-		return userService.userPetInfoSelect(useremail);
+	@PostMapping("/userPetInfoSelect")
+	public List<UserPetDTO> userPetInfoSelect(@RequestBody Map<String, String> useremail) {
+		String userEmail = useremail.get("useremail");
+		return userService.userPetInfoSelect(userEmail);
 	}
 	
 	// 닉네임 변경
-    @PutMapping("/{userId}/nickname")
-    public ResponseEntity<String> changeNickname(@PathVariable String userId, @RequestBody Map<String, String> request) {
-        String newNickname = request.get("newNickname");
+    @PutMapping("/nicknameChange")
+    public ResponseEntity<String> changeNickname(@RequestBody Map<String, String> userInfo) {
+    	String userId = userInfo.get("userid");
+    	String newNickname = userInfo.get("newNickname");
 
         // 서비스 호출하여 닉네임 변경
         String responseMessage = userService.changeUserNickname(userId, newNickname);

@@ -75,6 +75,7 @@ public class FeedServiceImpl implements FeedService {
 	    }
 		
 		FeedEntity feedinfo = FeedEntity.builder()
+				.feedid(feedDTO.getFeedid())
 				.feedstatus(1)
 				.picture(feedDTO.getPicture())
 				.feedcreatedate(LocalDateTime.now())
@@ -87,7 +88,7 @@ public class FeedServiceImpl implements FeedService {
 	// 피드 삭제
 	@Override
 	@Transactional
-	public void deleteFeed(Long feedid) {
+	public void deleteFeed(String feedid) {
 		// 피드 조회
         FeedEntity feedEntity = feedRepository.findById(feedid)
                 .orElseThrow(() -> new RuntimeException("피드를 찾을 수 없습니다."));
@@ -113,7 +114,7 @@ public class FeedServiceImpl implements FeedService {
 
 	    for (Object[] row : results) {
 	        FeedDTO feedDTO = new FeedDTO(
-	            (Long) row[0],  // feedid
+	            (String) row[0],  // feedid
 	            convertToLocalDateTime((Timestamp) row[1]), // feedcreatedate
 	            (Integer) row[2], // feedlike
 	            (Integer) row[3],  // feedstatus
@@ -144,7 +145,7 @@ public class FeedServiceImpl implements FeedService {
 	
 	// 피드 상세조회 (피드와 댓글)
 	@Override
-	public FeedWithCommentsDTO getFeedWithComments(String userid, Long feedid) {
+	public FeedWithCommentsDTO getFeedWithComments(String userid, String feedid) {
 		// 사용자와 피드 조회
 	    UserEntity user = userRepository.findById(userid)
 	            .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
@@ -243,7 +244,7 @@ public class FeedServiceImpl implements FeedService {
 	// 좋아요 및 좋아요 취소
 	@Override
 	@Transactional
-	public void toggleLike(String userid, Long feedid) {
+	public void toggleLike(String userid, String feedid) {
 	    // 사용자와 피드 조회
 	    UserEntity user = userRepository.findById(userid)
 	            .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
@@ -273,7 +274,7 @@ public class FeedServiceImpl implements FeedService {
 	
 	// 좋아요 갯수 조회
 	@Override
-	public long getFeedLikeCount(Long feedid) {
+	public long getFeedLikeCount(String feedid) {
 	    FeedEntity feed = feedRepository.findById(feedid)
 	            .orElseThrow(() -> new RuntimeException("피드를 찾을 수 없습니다."));
 	    return feedLikeRepository.countByFeed(feed);  // 피드에 달린 총 좋아요 수 반환
@@ -282,7 +283,7 @@ public class FeedServiceImpl implements FeedService {
 	
 	// 피드 ID로 피드 조회
 	@Override
-    public FeedEntity findFeedById(Long feedId) {
+    public FeedEntity findFeedById(String feedId) {
         return feedRepository.findById(feedId)
                 .orElseThrow(() -> new RuntimeException("피드를 찾을 수 없습니다."));
     }

@@ -17,6 +17,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,9 +37,9 @@ import lombok.ToString;
 public class FeedEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "feedid", nullable = false)
-	private Long feedid;
+	@Column(name = "feedid", nullable = false, unique = true, length = 50)
+	@NotBlank(message = "Feed ID는 필수 입력값입니다.")
+	private String feedid;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userid") // 외래 키를 가리키는 칼럼명 지정
