@@ -17,6 +17,7 @@ public class CommentsDTO {
 	private String userid;     	// 댓글 작성자 ID (UserEntity의 userid)
 	private String feedid;     	// 댓글이 달린 게시물 ID (FeedEntity의 feedid)
 	private String comments; 	// 댓글 내용
+	private String usernickname; // 유저 닉네임
 	private LocalDateTime commentsCreatedDate;  // 댓글 작성 시간
 	
 	/*

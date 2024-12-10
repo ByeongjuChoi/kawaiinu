@@ -19,7 +19,6 @@ public class FeedDTO {
 	private String feedid;	// 피드 아이디
 	private String userid;	// 유저 아이디
 	
-	@NotBlank(message = "이미지를 넣어주세요.")
 	private String picture;
 	
 	private int feedlike;

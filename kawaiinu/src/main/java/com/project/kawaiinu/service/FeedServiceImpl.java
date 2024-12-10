@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import com.project.kawaiinu.dto.CommentsDTO;
 import com.project.kawaiinu.dto.FeedDTO;
 import com.project.kawaiinu.dto.FeedWithCommentsDTO;
-import com.project.kawaiinu.dto.UserFeedDTO;
 import com.project.kawaiinu.entity.CommentsEntity;
 import com.project.kawaiinu.entity.FeedEntity;
 import com.project.kawaiinu.entity.FeedLikeEntity;
@@ -171,6 +170,7 @@ public class FeedServiceImpl implements FeedService {
 	            .map(c -> new CommentsDTO(
 	            		c.getCommentsid(),
 	                    c.getFeed().getFeedid(),
+	                    c.getUser().getUsernickname(),
 	                    c.getUser().getUserid(),
 	                    c.getComments(),
 	                    c.getCommentscreatedate()
@@ -214,6 +214,7 @@ public class FeedServiceImpl implements FeedService {
 	            .map(c -> new CommentsDTO(
 	            		c.getCommentsid(),
 	                    c.getFeed().getFeedid(),
+	                    c.getUser().getUsernickname(),  // 유저 닉네임 추가
 	                    c.getUser().getUserid(),
 	                    c.getComments(),
 	                    c.getCommentscreatedate()
@@ -229,6 +230,27 @@ public class FeedServiceImpl implements FeedService {
 	            comment.getCommentscreatedate()
 	    );
 	    */
+	}
+	
+	// 댓글 조회
+	@Override
+	public List<CommentsDTO> getComment(String feedId) {
+		FeedEntity feed = feedRepository.findById(feedId)
+		        .orElseThrow(() -> new RuntimeException("피드를 찾을 수 없습니다."));
+		
+		List<CommentsEntity> commentEntity = commentRepository.findByFeed(feed);
+		
+		return commentEntity.stream()
+				.map(comment -> CommentsDTO.builder()
+				        .commentsid(comment.getCommentsid()) 
+				        .userid(comment.getUser().getUserid()) 
+				        .feedid(comment.getFeed().getFeedid()) 
+				        .comments(comment.getComments())
+				        .usernickname(comment.getUser().getUsernickname())
+				        .commentsCreatedDate(comment.getCommentscreatedate())
+				        .build()
+				    )
+				    .collect(Collectors.toList());
 	}
 
 	// 댓글 삭제

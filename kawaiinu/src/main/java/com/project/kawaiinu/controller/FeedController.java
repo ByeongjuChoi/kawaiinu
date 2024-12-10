@@ -23,6 +23,7 @@ import com.project.kawaiinu.dto.FeedDTO;
 import com.project.kawaiinu.dto.FeedLikeRequestDTO;
 import com.project.kawaiinu.dto.FeedRequestDTO;
 import com.project.kawaiinu.dto.FeedWithCommentsDTO;
+import com.project.kawaiinu.entity.CommentsEntity;
 import com.project.kawaiinu.entity.FeedEntity;
 import com.project.kawaiinu.entity.UserEntity;
 import com.project.kawaiinu.repository.UserRepository;
@@ -102,6 +103,14 @@ public class FeedController {
 	@PostMapping(value = "/getFeedWithComments", consumes = "application/json", produces = "application/json")
 	public FeedWithCommentsDTO getFeedWithComments(@RequestBody FeedRequestDTO feedRequestDTO) {
 	    return feedService.getFeedWithComments(feedRequestDTO.getUserid(), feedRequestDTO.getFeedid());
+	}
+	
+	// Feed詳細照会
+	// 해당 피드 댓글 조회
+	@PostMapping(value = "/getComment", consumes = "application/json", produces = "application/json")
+	public List<CommentsDTO> getComment(@RequestBody Map<String, String> feedRequest) {
+		String feedId = feedRequest.get("feedid");
+	    return feedService.getComment(feedId);
 	}
 	
 	// 피드 공개/비공개 상태 변경

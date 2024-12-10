@@ -34,7 +34,7 @@ public class CommentsEntity {
     @Column(name = "commentsid", nullable = false)
 	private Long commentsid;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "userid") // User의 외래 키
     private UserEntity user;  // 댓글 작성자 (UserEntity와 연관)
     

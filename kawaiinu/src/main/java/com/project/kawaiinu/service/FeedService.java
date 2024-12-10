@@ -5,6 +5,7 @@ import java.util.List;
 import com.project.kawaiinu.dto.CommentsDTO;
 import com.project.kawaiinu.dto.FeedDTO;
 import com.project.kawaiinu.dto.FeedWithCommentsDTO;
+import com.project.kawaiinu.entity.CommentsEntity;
 import com.project.kawaiinu.entity.FeedEntity;
 
 public interface FeedService {
@@ -21,4 +22,5 @@ public interface FeedService {
 	
 	public void saveFeed(FeedEntity feedEntity);
 	public FeedEntity findFeedById(String feedId);
+	public List<CommentsDTO> getComment(String feedId);
 }
