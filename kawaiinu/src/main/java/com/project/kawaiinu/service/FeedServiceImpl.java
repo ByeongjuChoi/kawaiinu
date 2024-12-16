@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.project.kawaiinu.dto.CommentsDTO;
 import com.project.kawaiinu.dto.FeedDTO;
 import com.project.kawaiinu.dto.FeedWithCommentsDTO;
+import com.project.kawaiinu.dto.SelectAllDTO;
 import com.project.kawaiinu.entity.CommentsEntity;
 import com.project.kawaiinu.entity.FeedEntity;
 import com.project.kawaiinu.entity.FeedLikeEntity;
@@ -128,18 +129,21 @@ public class FeedServiceImpl implements FeedService {
 	
 	// 피드 전체 검색
 	@Override
-	public List<FeedDTO> feedSelectAll() {
-		List<FeedEntity> feeds = feedRepository.findAll();  // findAll()을 호출하여 모든 데이터를 가져옴
-        return feeds.stream()
-                    .map(feed -> new FeedDTO(
-                        feed.getFeedid(),
-                        feed.getKawaiinuuserfeedid().getUserid(),
-                        feed.getPicture(),
-                        feed.getFeedlike(),
-                        feed.getFeedcreatedate(),
-                        feed.getFeedstatus()
-                    ))
-                    .collect(Collectors.toList());
+	public List<SelectAllDTO> feedSelectAll() {
+		
+		List<Object[]> results = feedRepository.findAllFeedsWithLikes();
+		
+		return results.stream()
+                 .map(result -> new SelectAllDTO(
+                     (String) result[0],  // userId
+                     (String) result[1],  // feedId
+                     (Timestamp) result[2],  // feedCreateDate
+                     (Integer) result[3],  // feedLike
+                     (Integer) result[4],  // feedStatus
+                     (String) result[5],  // likeUserId
+                     (String) result[6]   // likeFeedId
+                 ))
+                 .collect(Collectors.toList());
 	}
 	
 	// 피드 상세조회 (피드와 댓글)
@@ -221,15 +225,31 @@ public class FeedServiceImpl implements FeedService {
 	            ))
 	            .collect(Collectors.toList());
 	    return commentsDTOList;
-		/*
-		// 댓글을 DTO로 변환하여 반환
+	}
+	
+	// 댓글 수정
+	@Override
+	public CommentsDTO updateComment(CommentsDTO commentsDTO) {
+	    // 댓글 조회
+	    CommentsEntity comment = commentRepository.findById(commentsDTO.getCommentsid())
+	            .orElseThrow(() -> new RuntimeException("댓글을 찾을 수 없습니다."));
+
+	    // 댓글 내용 업데이트
+	    comment.setComments(commentsDTO.getComments());
+	    comment.setCommentscreatedate(LocalDateTime.now()); // 수정 시간 업데이트
+
+	    // 댓글 저장
+	    commentRepository.save(comment);
+
+	    // 업데이트된 댓글을 DTO로 변환하여 반환
 	    return new CommentsDTO(
+	            comment.getCommentsid(),
 	            comment.getFeed().getFeedid(),
+	            comment.getUser().getUsernickname(),
 	            comment.getUser().getUserid(),
 	            comment.getComments(),
 	            comment.getCommentscreatedate()
 	    );
-	    */
 	}
 	
 	// 댓글 조회

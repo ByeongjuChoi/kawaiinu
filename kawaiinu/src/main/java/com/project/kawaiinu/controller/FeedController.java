@@ -11,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +22,7 @@ import com.project.kawaiinu.dto.FeedDTO;
 import com.project.kawaiinu.dto.FeedLikeRequestDTO;
 import com.project.kawaiinu.dto.FeedRequestDTO;
 import com.project.kawaiinu.dto.FeedWithCommentsDTO;
-import com.project.kawaiinu.entity.CommentsEntity;
+import com.project.kawaiinu.dto.SelectAllDTO;
 import com.project.kawaiinu.entity.FeedEntity;
 import com.project.kawaiinu.entity.UserEntity;
 import com.project.kawaiinu.repository.UserRepository;
@@ -79,7 +78,7 @@ public class FeedController {
 	// 全体Feed情報照会
 	// 피드 전체 검색
 	@GetMapping("/feedSelectAll")
-	public List<FeedDTO> feedSelectAll() {
+	public List<SelectAllDTO> feedSelectAll() {
 		return feedService.feedSelectAll();
 	}
 	
@@ -88,6 +87,13 @@ public class FeedController {
 	@PostMapping(value = "/commentsave", consumes = "application/json", produces = "application/json")
 	public List<CommentsDTO> addCommentToFeed(@RequestBody CommentsDTO commentsDTO) {
 		return feedService.addCommentToFeed(commentsDTO);
+	}
+	
+	// コメント修正
+	// 댓글 수정
+	@PutMapping(value = "/commentupdate", consumes = "application/json", produces = "application/json")
+	public CommentsDTO updateComment(@RequestBody CommentsDTO commentsDTO) {
+	    return feedService.updateComment(commentsDTO);
 	}
 	
 	// コメント Delete

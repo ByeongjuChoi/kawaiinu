@@ -22,4 +22,27 @@ public interface FeedRepository extends JpaRepository<FeedEntity, String> {
 	 		, nativeQuery = true)
 	List<Object[]> myFeedSelect(@Param("userid") String userid);
 	
+	// 피드 전체 불러오기
+	@Query(value = """
+				SELECT
+			        	u.userid AS userid,
+			        	f.feedid AS feedid,
+			        	f.feedcreatedate AS feedcreatedate,
+			        	f.feedlike AS feedlike,
+			        	f.feedstatus AS feedstatus,
+			        	fl.userid AS likeuserid,
+			        	fl.feedid AS likefeedid 
+			      FROM kawaiinu_user u
+			      LEFT OUTER JOIN 
+					(
+						SELECT feedid, feedcreatedate, feedlike, feedstatus, userid
+						  FROM kawaiinu_user_feed
+						 WHERE feedstatus = 1
+			        ) f 
+					on u.userid = f.userid
+			    LEFT OUTER JOIN
+			        feed_like fl   
+			            ON u.userid = fl.userid 
+	        """, nativeQuery = true)
+    List<Object[]> findAllFeedsWithLikes();
 }

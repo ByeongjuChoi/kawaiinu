@@ -48,4 +48,7 @@ public class CommentsEntity {
 	@Column(name = "commentscreatedate")
 	private LocalDateTime commentscreatedate;	// 피드 생성 날짜	타입 date로 바꿔야함
 	
+	public void setCommentscreatedate(LocalDateTime commentscreatedate) {
+        this.commentscreatedate = commentscreatedate;
+    }
 }
