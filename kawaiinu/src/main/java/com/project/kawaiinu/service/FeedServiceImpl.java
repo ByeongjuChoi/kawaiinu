@@ -45,6 +45,9 @@ public class FeedServiceImpl implements FeedService {
 	
 	@Autowired
     private StrollCountRepository strollCountRepository;
+	
+	@Autowired
+	private AlarmService alarmService;
 
 	// 게시글 저장
 	@Override
@@ -210,6 +213,11 @@ public class FeedServiceImpl implements FeedService {
 		// 피드를 다시 저장해서 댓글 목록을 업데이트
 		feedRepository.save(feed);  
 		
+		// 본인의 피드에 본인이 쓴 댓글은 알람테이블에 집어넣지 않는다.
+		if(!user.getUserid().equals(feed.getKawaiinuuserfeedid().getUserid())) {
+			alarmService.createLikeOrCommentAlarm(user.getUserid(), feed, 'C');			
+		}
+		
 		// 피드에 달린 모든 댓글을 조회
 	    List<CommentsEntity> allComments = commentRepository.findByFeed(feed);
 
@@ -312,6 +320,11 @@ public class FeedServiceImpl implements FeedService {
 
 	    // 피드 업데이트
 	    feedRepository.save(feed);
+	    
+	    // 본인의 피드에 본인이 쓴 댓글은 알람테이블에 집어넣지 않는다.
+ 		if(!user.getUserid().equals(feed.getKawaiinuuserfeedid().getUserid())) {
+ 			alarmService.createLikeOrCommentAlarm(user.getUserid(), feed, 'L');			
+ 		}
 	}
 	
 	// 좋아요 갯수 조회

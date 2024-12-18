@@ -1,6 +1,7 @@
 package com.project.kawaiinu.repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -11,4 +12,5 @@ public interface StrollCountRepository extends JpaRepository<StrollCountEntity, 
 
 	 // 사용자와 날짜 범위에 해당하는 산책 여부가 존재하는지 확인
     boolean existsByUserAndStrollDateBetween(UserEntity user, LocalDateTime start, LocalDateTime end);
+    List<StrollCountEntity> findByUser_Userid(String userid);
 }

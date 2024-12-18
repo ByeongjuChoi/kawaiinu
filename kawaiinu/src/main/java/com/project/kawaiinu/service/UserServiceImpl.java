@@ -1,15 +1,18 @@
 package com.project.kawaiinu.service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.project.kawaiinu.dto.StrollDTO;
 import com.project.kawaiinu.dto.UserDTO;
 import com.project.kawaiinu.dto.UserPetDTO;
+import com.project.kawaiinu.entity.StrollCountEntity;
 import com.project.kawaiinu.entity.UserEntity;
 import com.project.kawaiinu.entity.UserPetEntity;
+import com.project.kawaiinu.repository.StrollCountRepository;
 import com.project.kawaiinu.repository.UserPetRepository;
 import com.project.kawaiinu.repository.UserRepository;
 
@@ -25,6 +28,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private UserPetRepository userPetRepository;
+	
+	@Autowired
+    private StrollCountRepository strollCountRepository;
 	
 	@Override
 	@Transactional
@@ -111,6 +117,7 @@ public class UserServiceImpl implements UserService{
                         .useremail(userEntity.getUseremail())
                         .userage(userEntity.getUserage())
                         .usergender(userEntity.getUsergender())
+                        .userintroduce(userEntity.getUserintroduce())
                         .build())
                 .toList();
 	}
@@ -137,6 +144,7 @@ public class UserServiceImpl implements UserService{
                 .toList();
 	}
 
+	// 자기소개글 업데이트
 	@Override
 	@Transactional
 	public void updateUserIntroduce(String userid, String userintroduce) {
@@ -146,5 +154,22 @@ public class UserServiceImpl implements UserService{
         userEntity.setUserintroduce(userintroduce); // 자기소개글 업데이트
         userRepository.save(userEntity);           // 변경 사항 저장
 	}
+	
+	@Override
+	@Transactional
+	public List<StrollDTO> getStrollsByUserId(String userId) {
+		
+        List<StrollCountEntity> strollEntities = strollCountRepository.findByUser_Userid(userId);
+        
+        return strollEntities.stream()
+                .map(strollEntity -> StrollDTO.builder()
+                        .userid(strollEntity.getUser() != null ? strollEntity.getUser().getUserid() : "No User")
+                        .strollId(strollEntity.getStrollId())
+                        .strollDate(strollEntity.getStrollDate())
+                        .isStrolled(strollEntity.getIsStrolled())
+                        .feedid(strollEntity.getFeed() != null ? strollEntity.getFeed().getFeedid() : null)
+                        .build())
+                .toList();
+    }
 
 }
