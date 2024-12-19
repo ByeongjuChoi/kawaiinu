@@ -25,16 +25,16 @@ import lombok.Setter;
 public class FeedLikeEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long likeid;  // 좋아요 ID
+	private Long likeid;  // いいねID
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "userid")
-	private UserEntity user;  // 좋아요를 누른 사용자
+	private UserEntity user;  // いいねボタンを押下したユーザー
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "feedid")
-	private FeedEntity feed;  // 좋아요가 눌린 피드
+	private FeedEntity feed;  // いいねボタンが押下されたポスト
 	
 	@Column(name = "likedate")
-	private LocalDateTime likedate;  // 좋아요 눌린 날짜
+	private LocalDateTime likedate;  // いいねボタンが押下された日日
 }

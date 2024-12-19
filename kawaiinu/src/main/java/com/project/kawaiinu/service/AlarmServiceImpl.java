@@ -33,7 +33,7 @@ public class AlarmServiceImpl implements AlarmService {
 	@Autowired
 	private UserRepository userRepository;
 
-	// 알람 생성
+	// アラム生成
 	@Override
 	@Transactional
 	public void createLikeOrCommentAlarm(String otherUserid, FeedEntity feed, char LikeOrComment) {
@@ -41,48 +41,55 @@ public class AlarmServiceImpl implements AlarmService {
 				.user(feed.getKawaiinuuserfeedid())
 				.feed(feed)
 				.readYN('N') 
-				.likeOrComment(LikeOrComment)	// 던져주는 값 C or L
+				.likeOrComment(LikeOrComment)	// 伝達する値C or L
 				.otherUserId(otherUserid)
 				.build();
 		alarmRepository.save(alarm);
 	}
 	
-	// 알람조회
+	// アラムの情報を抽出して取得
 	@Override
 	public List<AlarmDTO> mySelectAlarm(String userid) {
-		// 사용자와 피드 조회
+		// ユーザーとポストの情報を抽出して取得
 	    UserEntity user = userRepository.findById(userid)
-	            .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+	            .orElseThrow(() -> new RuntimeException("ユーザーが見つかりません。"));
 
-	    // 해당 유저의 알람을 불러옴
+	    // 該当するユーザーのアラムの情報を抽出して取得
 	    List<Object[]> results = alarmRepository.mySelectAlarm(userid);
 	    
 		return results.stream()
                  .map(result -> new AlarmDTO(
                      (Long) result[0],			// alarmId
-                 	 (String) result[1],		// 유저 아이디
-                 	 (String) result[2],		// 유저 닉네임
-                 	 (String) result[3],		// 댓글 or 좋아요 실행한 사용자
-                 	 (String) result[4],		// 댓글 or 좋아요 실행한 사용자의 닉네임
-                 	 (Timestamp) result[5],	// 생성날짜
-                 	 (char) result[6],			// L: 좋아요, C: 댓글
-                 	 (String) result[7],		// 피드 아이디
-                 	 (char) result[8]			// Y: 읽음, N: 읽지않음
+                 	 (String) result[1],		// ユーザーID
+                 	 (String) result[2],		// ユーザーニックネーム
+                 	 (String) result[3],		// リプライ or いいねをしたユーザー
+                 	 (String) result[4],		// リプライ or いいねをしたユーザーのニックネーム
+                 	 (Timestamp) result[5],		// 生成日
+                 	 (char) result[6],			// L:いいね、C:リプライ
+                 	 (String) result[7],		// ポストID
+                 	 (char) result[8]			// Y：読んだ、N：読んでいない
                  ))
                  .collect(Collectors.toList());
 	}
 	
-	// 알람 갯수 조회
+	// アラムの個数の情報を抽出して取得ユーザー
 	@Override
 	public int alarmCount(String userid) {
 	    int alarmCnt = alarmRepository.alarmCount(userid);
 		return alarmCnt;
 	}
 	
-	// 알람 확인
+	// アラムチェック
 	@Override
 	@Transactional
 	public void alarmCheck(int alarmid) {
 		alarmRepository.alarmCheck(alarmid);
+	}
+	
+	// 全アラムチェック
+	@Override
+	@Transactional
+	public void alarmCheckAll(String userid) {
+		alarmRepository.alarmCheckAll(userid);
 	}
 }

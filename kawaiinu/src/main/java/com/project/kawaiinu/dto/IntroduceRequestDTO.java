@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class IntroduceRequestDTO {
-	private String userid;           // 사용자 ID
-    private String userintroduce;  // 자기소개글
+	private String userid;			// ユーザーID
+    private String userintroduce;	// 自己紹介の内容
 }

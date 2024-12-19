@@ -11,7 +11,7 @@ import com.project.kawaiinu.entity.UserPetEntity;
 
 public interface UserPetRepository extends JpaRepository<UserPetEntity, Long> {
 
-	// useremail로 펫 리스트 조회
+	// でペットリスト情報を抽出して取得
     @Query("SELECT p FROM UserPetEntity p JOIN p.kawaiinuuserid u WHERE u.useremail = :useremail")
     List<UserPetEntity> userPetInfoSelect(@Param("useremail") String useremail);
 }

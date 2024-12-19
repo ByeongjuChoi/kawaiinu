@@ -12,13 +12,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AlarmDTO {
-	private Long alarmid;				// alarmId
-	private String userid;				// 유저 아이디
-	private String usernickname;		// 유저 닉네임
-	private String otherUserid;			// 댓글 or 좋아요 실행한 사용자
-	private String otherusernickname;	// 댓글 or 좋아요 실행한 사용자의 닉네임
-	private Timestamp createDate;	// 생성날짜
-	private char likeOrComment;			// L: 좋아요, C: 댓글
-	private String feedid;				// 피드 아이디
-	private char readYN;				// Y: 읽음, N: 읽지않음
+	private Long alarmid;				// アラームid
+	private String userid;				// ユーザーid
+	private String usernickname;		// ユーザーニックネーム
+	private String otherUserid;			// リプライやいいねをしたユーザーid
+	private String otherusernickname;	// リプライといいねをしたユーザーのニックネーム
+	private Timestamp createDate;		// 生成日
+	private char likeOrComment;			// L:いいね、C:リプライ
+	private String feedid;				// ポストのID
+	private char readYN;				// Y:読んだ状態、N:読んでない状態
 }

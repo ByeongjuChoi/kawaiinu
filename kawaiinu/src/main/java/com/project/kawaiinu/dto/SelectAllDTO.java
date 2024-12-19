@@ -16,10 +16,10 @@ public class SelectAllDTO {
     private Integer feedLike;
     private Timestamp feedCreateDate;
     private Integer feedStatus;
-    private String likeUserId; // 새 필드 추가
-    private String likeFeedId; // 새 필드 추가
+    private String likeUserId; 
+    private String likeFeedId; 
     
-    // 생성자 추가
+    // 生成者の追加
     public SelectAllDTO(String userId, String feedId, Timestamp feedCreateDate, Integer feedLike, Integer feedStatus, String likeUserId, String likeFeedId) {
         this.userId = userId;
         this.feedId = feedId;

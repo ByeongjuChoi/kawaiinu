@@ -13,5 +13,4 @@ public interface CommentRepository extends JpaRepository<CommentsEntity, Long> {
 	List<CommentsEntity> findByFeed(FeedEntity feed);
 	List<CommentsEntity> findByFeedAndUser(FeedEntity feed, UserEntity user);
     void deleteByFeed(FeedEntity feed);
-//    void deleteComment(CommentsEntity comments);	// 댓글삭제
 }

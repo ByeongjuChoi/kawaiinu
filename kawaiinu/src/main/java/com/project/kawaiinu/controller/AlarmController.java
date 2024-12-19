@@ -22,24 +22,31 @@ public class AlarmController {
 	@Autowired
 	private AlarmService alarmService;
 	
-	// 알람 정보 조회
+	// アラーム情報を抽出して取得
 	@PostMapping("/mySelectAlarm")
 	public List<AlarmDTO> mySelectAlarm(@RequestBody Map<String, String> userInfo) {
 		String userId = userInfo.get("userid");
 		return alarmService.mySelectAlarm(userId);
 	}
 
-	// 알람 갯수 조회
+	// アラーム個数の情報を抽出して取得
 	@PostMapping("/alarmCount")
 	public int alarmCount(@RequestBody Map<String, String> userInfo) {
 		String userId = userInfo.get("userid");
 		return alarmService.alarmCount(userId);
 	}
 	
-	// 알람 확인
+	// アラーム確認
 	@PostMapping("/alarmCheck")
 	public void alarmCheck(@RequestBody Map<String, Integer> alarmInfo) {
 		int alarmid = alarmInfo.get("alarmid");
 		alarmService.alarmCheck(alarmid);
+	}
+	
+	// アラーム全体確認
+	@PostMapping("/alarmCheckAll")
+	public void alarmCheckAll(@RequestBody Map<String, String> alarmInfo) {
+		String userid = alarmInfo.get("userid");
+		alarmService.alarmCheckAll(userid);
 	}
 }

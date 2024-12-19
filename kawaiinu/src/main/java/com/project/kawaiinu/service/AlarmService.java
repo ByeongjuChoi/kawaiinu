@@ -10,4 +10,5 @@ public interface AlarmService {
 	List<AlarmDTO> mySelectAlarm(String userid);
 	int alarmCount(String userid);
 	void alarmCheck(int alarmid);
+	void alarmCheckAll(String userid);
 }

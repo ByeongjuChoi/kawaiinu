@@ -36,19 +36,15 @@ public class UserController {
 	private UserService userService;
 	
 	// 会員登録
-	// 회원가입
-	@PostMapping(value = "/userentry"
-				, consumes = "application/json"
-				)
+	@PostMapping(value = "/userentry", consumes = "application/json")
 	public ResponseEntity saveUser(@Valid @RequestBody UserDTO userDTO, Errors error, Model model) throws ParseException {
 		if (error.hasErrors()) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error.getAllErrors());
 		}
 		
-		// ユーザー名重複検査
-		// 닉네임 중복검사 (true 중복일시)　
+		// ユーザー名重複検査　
 		if(userService.nickDupCheck(userDTO.getUsernickname()) == true) {
-			String str = "{\"defaultMessage\":\"닉네임이 중복되었습니다.\"}";
+			String str = "{\"defaultMessage\":\"ニックネームが重複されました。\"}";
 			JSONParser JsonParser = new JSONParser();
 			JSONObject jsonObject = (JSONObject) JsonParser.parse(str);
 			
@@ -56,7 +52,7 @@ public class UserController {
 		}
 		
 		if(userService.isEmailDuplicate(userDTO.getUseremail()) == true) {
-			String str = "{\"defaultMessage\":\"이메일이 중복되었습니다.\"}";
+			String str = "{\"defaultMessage\":\"メールアドレスが重複されました。\"}";
 			JSONParser JsonParser = new JSONParser();
 			JSONObject jsonObject = (JSONObject) JsonParser.parse(str);
 			
@@ -68,7 +64,6 @@ public class UserController {
 	}
 	
 	// pet登録
-	// 펫 등록
 	@PostMapping(value = "/petentry"
 			, consumes = "application/json"
 			)
@@ -80,51 +75,51 @@ public class UserController {
 	    return ResponseEntity.ok(userPetDTO);
 	}
 	
-	// ユーザー情報照会	
-	// 유저 정보 조회
+	// ユーザー情報照会	ユーザー情報を抽出して取得
 	@PostMapping("/userInfoSelect")
 	public List<UserDTO> userInfoSelect(@RequestBody Map<String, String> useremail) {
 		String userEmail = useremail.get("useremail");
 		return userService.userInfoSelect(userEmail);
 	}
 	
-	// 펫 정보 조회
+	// pet情報照会ペット情報を抽出して取得
 	@PostMapping("/userPetInfoSelect")
 	public List<UserPetDTO> userPetInfoSelect(@RequestBody Map<String, String> useremail) {
 		String userEmail = useremail.get("useremail");
 		return userService.userPetInfoSelect(userEmail);
 	}
 	
-	// 닉네임 변경
+	// ニックネームの変更
     @PutMapping("/nicknameChange")
     public ResponseEntity<String> changeNickname(@RequestBody Map<String, String> userInfo) {
     	String userId = userInfo.get("userid");
     	String newNickname = userInfo.get("newNickname");
 
-        // 서비스 호출하여 닉네임 변경
+        // サービスを使用してニックネームを変更する
         String responseMessage = userService.changeUserNickname(userId, newNickname);
 
-        // 결과에 따른 응답 반환
-        if (responseMessage.contains("성공")) {
+        // 結果による応答を返還
+        if (responseMessage.contains("成功")) {
             return ResponseEntity.ok(responseMessage);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseMessage);
         }
     }
     
-    // 자기소개글 수정
+    // 自己紹介の内容アップデート
     @PatchMapping("/introduce")
     public ResponseEntity<Void> updateIntroduce(@RequestBody IntroduceRequestDTO introduceRequestDTO) {
         userService.updateUserIntroduce(introduceRequestDTO.getUserid(), introduceRequestDTO.getUserintroduce());
-        return ResponseEntity.ok().build(); // 업데이트 성공
+        return ResponseEntity.ok().build();
     }
     
+    // 散歩情報を抽出して取得
     @PostMapping("/selectStroll")
     public ResponseEntity<List<StrollDTO>> selectStroll(@RequestBody Map<String, String> userid) {
     	String userId = userid.get("userid");
 
         if (userId == null || userId.isBlank()) {
-            return ResponseEntity.badRequest().build(); // Handle invalid input
+            return ResponseEntity.badRequest().build();
         }
         try {
             List<StrollDTO> strolls = userService.getStrollsByUserId(userId);
@@ -132,10 +127,10 @@ public class UserController {
             if (!strolls.isEmpty()) {
                 return ResponseEntity.ok(strolls);
             } else {
-                return ResponseEntity.notFound().build(); // No data found for given userid
+                return ResponseEntity.notFound().build(); 
             }
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(null); // Handle exceptions
+            return ResponseEntity.status(500).body(null);
         }
     }
 }

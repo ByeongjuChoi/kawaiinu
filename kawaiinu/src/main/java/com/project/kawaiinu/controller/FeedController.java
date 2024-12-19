@@ -43,7 +43,7 @@ public class FeedController {
 	private UserRepository userRepository;
 	
 	// Feed登録
-	// 게시글 등록
+	// ポスト登録
 	@PostMapping(value = "/feedsave"
 			, consumes = "application/json"
 			)
@@ -57,7 +57,7 @@ public class FeedController {
 	}
 	
 	// Feed Delete
-	// 게시글 삭제
+	// ポストデリート
 	@DeleteMapping("/delete")
     public ResponseEntity<Void> deleteFeed(@RequestBody Map<String, String> feedInfo) {
 		
@@ -68,7 +68,7 @@ public class FeedController {
     }
 	
 	// MyFeed情報照会
-	// 내 피드 정보 조회
+	// ユーザーのポスト情報を抽出して取得
 	@PostMapping("/myFeedSelect")
 	public List<FeedDTO> myFeedSelect(@RequestBody Map<String, String> userInfo) {
 		String userId = userInfo.get("userid");
@@ -76,87 +76,83 @@ public class FeedController {
 	}
 	
 	// 全体Feed情報照会
-	// 피드 전체 검색
+	// 全ポストの情報を抽出して取得
 	@GetMapping("/feedSelectAll")
 	public List<SelectAllDTO> feedSelectAll() {
 		return feedService.feedSelectAll();
 	}
 	
-	// コメント登録
-	// 댓글 작성
+	// リプライ登録(追加)
 	@PostMapping(value = "/commentsave", consumes = "application/json", produces = "application/json")
 	public List<CommentsDTO> addCommentToFeed(@RequestBody CommentsDTO commentsDTO) {
 		return feedService.addCommentToFeed(commentsDTO);
 	}
 	
-	// コメント修正
-	// 댓글 수정
+	// リプライアップデート
 	@PutMapping(value = "/commentupdate", consumes = "application/json", produces = "application/json")
 	public CommentsDTO updateComment(@RequestBody CommentsDTO commentsDTO) {
 	    return feedService.updateComment(commentsDTO);
 	}
 	
-	// コメント Delete
-	// 댓글 삭제
+	// リプライデリート
 	@DeleteMapping("deleteComment")
     public ResponseEntity<Void> deleteComment(@RequestBody CommentsDTO commentsDTO) {
         feedService.deleteComment(commentsDTO);
-        return ResponseEntity.noContent().build(); // 삭제 성공 시 204 No Content 반환
+        return ResponseEntity.noContent().build();
     }
 	
 	// Feed詳細照会
-	// 피드 상세조회 (피드와 댓글)
+	// ポストの詳細情報を抽出して取得(ポストとリプライ)
 	@PostMapping(value = "/getFeedWithComments", consumes = "application/json", produces = "application/json")
 	public FeedWithCommentsDTO getFeedWithComments(@RequestBody FeedRequestDTO feedRequestDTO) {
 	    return feedService.getFeedWithComments(feedRequestDTO.getUserid(), feedRequestDTO.getFeedid());
 	}
 	
 	// Feed詳細照会
-	// 해당 피드 댓글 조회
+	// 該当するポストのリプライを抽出して取得
 	@PostMapping(value = "/getComment", consumes = "application/json", produces = "application/json")
 	public List<CommentsDTO> getComment(@RequestBody Map<String, String> feedRequest) {
 		String feedId = feedRequest.get("feedid");
 	    return feedService.getComment(feedId);
 	}
 	
-	// 피드 공개/비공개 상태 변경
+	// ポストの公開/非公開の状態変更
     @PutMapping("/updateFeedStatus")
     public ResponseEntity<?> updateFeedStatus(@RequestBody Map<String, String> userFeedInfo) {
     	
     	String feedId = userFeedInfo.get("feedid");
     	String userid = userFeedInfo.get("userid");
-    	// 해당 userId에 맞는 사용자 찾기
+    	// 該当するユーザーidに当たるユーザーの情報を抽出して取得
         UserEntity user = userRepository.findById(userid)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new RuntimeException("ユーザーが見つかりません。"));
 
-        // 피드 찾기
+        // ポストの情報を抽出して取得
         FeedEntity feedEntity = feedService.findFeedById(feedId);
 
-        // 피드를 작성한 사용자만 상태를 변경할 수 있도록 검증
+        // ポストを作成したユーザーのみポストの状態の変更が出来るように検証
         if (!feedEntity.getKawaiinuuserfeedid().getUserid().equals(userid)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("피드를 작성한 사용자만 상태를 변경할 수 있습니다.");
+                    .body("ポストを作成したユーザーのみ修正が可能です。");
         }
 
-        // 현재 상태에 따라 공개/비공개 상태 변경
-        int newStatus = feedEntity.getFeedstatus() == 1 ? 0 : 1; // 공개 -> 비공개 또는 비공개 -> 공개
-        feedEntity.setFeedStatus(newStatus); // 상태 변경
-        feedService.saveFeed(feedEntity); // 변경된 피드 저장
+        // 現在状態によって公開/非公開の状態変更
+        int newStatus = feedEntity.getFeedstatus() == 1 ? 0 : 1; // 公開→非公開/公開→公開
+        feedEntity.setFeedStatus(newStatus); // 状態変更
+        feedService.saveFeed(feedEntity); // 変更されたポストをアップデート
 
-        // 상태 변경 완료 응답
-        return ResponseEntity.ok("피드 상태가 변경되었습니다.");
+        // 状態変更完了の応答
+        return ResponseEntity.ok("ポストの状態が変更されました。");
     }
 	
 	//いいね登録、いいねキャンセル
-	// 좋아요, 좋아요 취소
 	@PostMapping("/toggleLike")
 	public ResponseEntity<String> toggleLike(@RequestBody FeedLikeRequestDTO requestDTO) {
 	    feedService.toggleLike(requestDTO.getUserid(), requestDTO.getFeedid());
-	    return ResponseEntity.ok("좋아요 상태가 변경되었습니다.");
+	    return ResponseEntity.ok("いいねの状態が変更されました。");
 	}
 
 	// いいねカウント照会
-	// 좋아요 갯수 조회
+	// いいねの個数を抽出して取得
 	@PostMapping("/getFeedLikeCount")
 	public ResponseEntity<Long> getFeedLikeCount(@RequestBody Map<String, String> feedInfo) {
 		String feedId = feedInfo.get("feedid");

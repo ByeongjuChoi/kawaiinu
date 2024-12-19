@@ -35,18 +35,18 @@ public class CommentsEntity {
 	private Long commentsid;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "userid") // User의 외래 키
-    private UserEntity user;  // 댓글 작성자 (UserEntity와 연관)
+    @JoinColumn(name = "userid") 	
+    private UserEntity user;  		
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "feedid") // 외래 키를 가리키는 칼럼명 지정
+    @JoinColumn(name = "feedid") 
     private FeedEntity feed;
     
 	@Column(name = "comments")
-	private String comments;		// 댓글
+	private String comments;	
 	
 	@Column(name = "commentscreatedate")
-	private LocalDateTime commentscreatedate;	// 피드 생성 날짜	타입 date로 바꿔야함
+	private LocalDateTime commentscreatedate;
 	
 	public void setCommentscreatedate(LocalDateTime commentscreatedate) {
         this.commentscreatedate = commentscreatedate;

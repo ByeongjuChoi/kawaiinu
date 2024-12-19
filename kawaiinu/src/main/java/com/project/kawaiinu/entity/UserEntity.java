@@ -35,7 +35,7 @@ import lombok.ToString;
 public class UserEntity {
 	@Id
     @Column(name = "userid", nullable = false, unique = true, length = 50)
-	@NotBlank(message = "User ID는 필수 입력값입니다.")
+	@NotBlank(message = "User IDは必ず入力して下さい。.")
 	private String userid;
 	
 	@Column(name = "useremail", nullable = false)
@@ -51,15 +51,14 @@ public class UserEntity {
 	private String usergender;
 	
 	@Column(name = "userintroduce", nullable = true)
-	@Size(max = 30, message = "자기소개는 최대 30자까지 작성 가능합니다.")
+	@Size(max = 30, message = "自己紹介は最大30文字まで可能です。")
 	private String userintroduce;
 	
-	// 유저 생성 날짜 (자동 생성)
+	// ユーザーの生成日(自動に生成される)
 	@CreationTimestamp
 	@Column(name = "usercreatedate", updatable = false, nullable = false)
 	private LocalDateTime usercreatedate;
 	
-	// 유저가 가진 모든 펫들과의 관계
 	@JsonIgnore
     @OneToMany(mappedBy = "kawaiinuuserid", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserPetEntity> userpets = new ArrayList<>();
@@ -68,13 +67,13 @@ public class UserEntity {
     @OneToMany(mappedBy = "kawaiinuuserfeedid")
     private List<FeedEntity> userfeeds = new ArrayList<>();
 	
-	// 펫 추가 메서드
+	// ペット追加メソッド
     public void addPet(UserPetEntity pet) {
         this.userpets.add(pet);
         pet.setKawaiinuuserid(this);
     }
 
-    // 펫 제거 메서드
+    // ペット削除メソッド
     public void removePet(UserPetEntity pet) {
         this.userpets.remove(pet);
         pet.setKawaiinuuserid(null);

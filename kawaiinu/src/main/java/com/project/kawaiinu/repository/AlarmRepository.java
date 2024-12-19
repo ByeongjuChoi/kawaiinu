@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import com.project.kawaiinu.entity.AlarmEntity;
 
 public interface AlarmRepository extends JpaRepository<AlarmEntity, Long>{
-	// 해당유저의 알람 전체 불러오기
+	// 該当するユーザーの全アラムの内容を抽出して取得
 	@Query(value = """
 				SELECT
 						a.alarmid,
@@ -24,10 +24,11 @@ public interface AlarmRepository extends JpaRepository<AlarmEntity, Long>{
 			      FROM kawaiinu_alarm a
 				 WHERE a.readyn = 'N'
 				   AND a.userid = :userid
+				 ORDER BY alarmid desc
 	        """, nativeQuery = true)
     List<Object[]> mySelectAlarm(String userid);
     
-	// 해당유저의 알람 전체 불러오기
+	// 該当するユーザーの全アラムの情報を抽出して取得
 	@Query(value = """
 				SELECT count(*)
 			      FROM kawaiinu_alarm a
@@ -36,7 +37,7 @@ public interface AlarmRepository extends JpaRepository<AlarmEntity, Long>{
 	        """, nativeQuery = true)
     int alarmCount(String userid);
 	
-	// 해당유저의 알람 확인
+	// 該当するユーザーのアラムを確認
 	@Modifying
 	@Query(value = """
 				UPDATE kawaiinu_alarm
@@ -44,4 +45,14 @@ public interface AlarmRepository extends JpaRepository<AlarmEntity, Long>{
 				 WHERE alarmid = :alarmid
 	        """, nativeQuery = true)
     void alarmCheck(int alarmid);
+	
+	// 該当するユーザーの全アラムを確認
+	@Modifying
+	@Query(value = """
+				UPDATE kawaiinu_alarm
+				   SET readyn = 'Y'
+				 WHERE userid = :userid
+				   AND readyn = 'N'
+	        """, nativeQuery = true)
+    void alarmCheckAll(String userid);
 }

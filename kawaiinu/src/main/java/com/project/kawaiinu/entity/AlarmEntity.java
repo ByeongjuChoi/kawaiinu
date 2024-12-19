@@ -44,15 +44,15 @@ public class AlarmEntity {
     private FeedEntity feed;
 	
 	@Column(name = "readYN", nullable = false)
-    private char readYN; // 읽기 여부 (Y/N)
+    private char readYN; // アラーム確認状態(Y/N)
 
     @Column(name = "likeOrComment", nullable = false)
-    private char likeOrComment; // 좋아요/댓글 구분 (L/C)
+    private char likeOrComment; // いいね/リプライの区分(L/C)
 
     @Column(name = "otherUserid", nullable = false)
-    private String otherUserId; // 좋아요/댓글을 수행한 사용자 ID
+    private String otherUserId; // いいね/リプライをしたユーザー
 
     @CreationTimestamp
     @Column(name = "createDate", nullable = false)
-    private LocalDateTime createDate; // 알람 생성 날짜
+    private LocalDateTime createDate; 
 }

@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class StrollDTO {
     private Long strollId;
     private String userid;
-    private String feedid;  // 해당 StrollCountEntity가 연관된 FeedEntity
-    private LocalDateTime strollDate;  // 산책 날짜
-    private String isStrolled;  // 산책 여부 ('y' or 'n')
+    private String feedid;  
+    private LocalDateTime strollDate;
+    private String isStrolled;  // 散歩の存否(Y or N)
 }

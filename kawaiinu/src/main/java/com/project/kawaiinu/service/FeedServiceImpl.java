@@ -49,31 +49,31 @@ public class FeedServiceImpl implements FeedService {
 	@Autowired
 	private AlarmService alarmService;
 
-	// 게시글 저장
+	// ポスト登録
 	@Override
 	public void saveFeed(FeedDTO feedDTO) {
 		
 		String userId = feedDTO.getUserid();
 		UserEntity userEntity = userRepository.findById(userId)
-				.orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+				.orElseThrow(() -> new RuntimeException("ユーザーが見つかりません。"));
 		
-		// 현재 날짜의 시작 시간과 끝 시간 계산 (오늘 00:00:00 ~ 오늘 23:59:59)
+		// 現在日付の始まる時間と終わる時間を計算(当日00:00:00~当日23:59:59)
 	    LocalDateTime todayStart = LocalDateTime.now().toLocalDate().atStartOfDay();
 	    LocalDateTime todayEnd = todayStart.plusDays(1);
 	    
-	    // 해당 사용자가 오늘 이미 산책한 적이 있는지 확인
+	    // 該当するユーザーがの当日散歩の存否
 	    boolean alreadyStrolled = strollCountRepository.existsByUserAndStrollDateBetween(
 	            userEntity, todayStart, todayEnd);
 	    
-	    // 만약 오늘 산책하지 않았다면, StrollCountEntity를 생성하여 is_strolled 값을 'y'로 설정
+	    // 散歩をしていないならStrollCountEntityを生成してis_strolledの値をyに設定
 	    if (!alreadyStrolled) {
 	        StrollCountEntity strollCount = StrollCountEntity.builder()
-	                .user(userEntity)  // UserEntity 연결
-	                .strollDate(LocalDateTime.now())  // 현재 시간 사용
-	                .isStrolled("Y")  // 산책 여부 'y'
+	                .user(userEntity)  // UserEntity連結
+	                .strollDate(LocalDateTime.now())  // 現在の時間を使う
+	                .isStrolled("Y")  // 散歩の存否'y'
 	                .build();
 	        
-	        // StrollCountEntity 저장
+	        // StrollCountEntityを追加(アップデート)
 	        strollCountRepository.save(strollCount);
 	    }
 		
@@ -88,28 +88,28 @@ public class FeedServiceImpl implements FeedService {
 		feedRepository.save(feedinfo);
 	}
 	
-	// 피드 삭제
+	// ポストデリート
 	@Override
 	@Transactional
 	public void deleteFeed(String feedid) {
-		// 피드 조회
+		// ポストの情報を抽出して取得
         FeedEntity feedEntity = feedRepository.findById(feedid)
-                .orElseThrow(() -> new RuntimeException("피드를 찾을 수 없습니다."));
+                .orElseThrow(() -> new RuntimeException("ポストが見つかりません。"));
 
-        // 해당 피드에 대한 댓글 삭제
+        // 該当するポストに関われたリプライを削除
         commentRepository.deleteByFeed(feedEntity);
 
-        // 해당 피드에 대한 좋아요 삭제
+        // 該当するポストに関われたいいねを削除
         feedLikeRepository.deleteByFeed(feedEntity);
 
-        // 피드 삭제
+        // ポストを削除
         feedRepository.delete(feedEntity);
 
-        // 피드 삭제 후 StrollCountEntity에 대한 영향이 없도록 하여 'is_strolled'는 그대로 'y'로 유지
-        // StrollCountEntity에서 해당 FeedEntity와 연결된 항목들은 삭제하지 않음
+        // ポスト削除後、StrollCountEntityに影響が与えられないようにしてis_strolledはそのままyにする
+        // StrollCountEntityでFeedEntityと連結されている内容は削除しない
 	}
 	
-	// 내 피드 불러오기
+	// ユーザーの情報を抽出して取得
 	@Override
 	public List<FeedDTO> myFeedSelect(String userid) {
 		List<Object[]> results = feedRepository.myFeedSelect(userid);
@@ -117,12 +117,12 @@ public class FeedServiceImpl implements FeedService {
 
 	    for (Object[] row : results) {
 	        FeedDTO feedDTO = new FeedDTO(
-	            (String) row[0],  // feedid
+	            (String) row[0],  							// feedid
 	            convertToLocalDateTime((Timestamp) row[1]), // feedcreatedate
-	            (Integer) row[2], // feedlike
-	            (Integer) row[3],  // feedstatus
-	            (String) row[4],  // picture
-	            (String) row[5]    // userid
+	            (Integer) row[2], 							// feedlike
+	            (Integer) row[3],  							// feedstatus
+	            (String) row[4],  							// picture
+	            (String) row[5]    							// userid
 	        );
 	        feedDTOs.add(feedDTO);
 	    }
@@ -130,7 +130,7 @@ public class FeedServiceImpl implements FeedService {
 	    return feedDTOs;
 	}
 	
-	// 피드 전체 검색
+	// 全ポストの情報を抽出して取得ポスト
 	@Override
 	public List<SelectAllDTO> feedSelectAll() {
 		
@@ -138,28 +138,28 @@ public class FeedServiceImpl implements FeedService {
 		
 		return results.stream()
                  .map(result -> new SelectAllDTO(
-                     (String) result[0],  // userId
-                     (String) result[1],  // feedId
-                     (Timestamp) result[2],  // feedCreateDate
-                     (Integer) result[3],  // feedLike
-                     (Integer) result[4],  // feedStatus
-                     (String) result[5],  // likeUserId
-                     (String) result[6]   // likeFeedId
+                     (String) result[0],  	// userId
+                     (String) result[1],  	// feedId
+                     (Timestamp) result[2],	// feedCreateDate
+                     (Integer) result[3],  	// feedLike
+                     (Integer) result[4],  	// feedStatus
+                     (String) result[5],  	// likeUserId
+                     (String) result[6]   	// likeFeedId
                  ))
                  .collect(Collectors.toList());
 	}
 	
-	// 피드 상세조회 (피드와 댓글)
+	// ポストの詳細情報を抽出して取得ポスト(ポストとリプライ)
 	@Override
 	public FeedWithCommentsDTO getFeedWithComments(String userid, String feedid) {
-		// 사용자와 피드 조회
+		// ユーザーとポストの情報を抽出して取得ポスト
 	    UserEntity user = userRepository.findById(userid)
-	            .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+	            .orElseThrow(() -> new RuntimeException("ユーザーが見つかりません。"));
 
 	    FeedEntity feed = feedRepository.findById(feedid)
-	            .orElseThrow(() -> new RuntimeException("피드를 찾을 수 없습니다."));
+	            .orElseThrow(() -> new RuntimeException("ポストが見つかりません。"));
 
-	    // 피드 정보 DTO로 변환
+	    // ポスト情報をDTOに変換
 	    FeedDTO feedDTO = new FeedDTO(
 	            feed.getFeedid(),
 	            feed.getFeedcreatedate(),
@@ -169,10 +169,10 @@ public class FeedServiceImpl implements FeedService {
 	            feed.getKawaiinuuserfeedid().getUserid()
 	    );
 
-	    // 해당 피드에 달린 댓글 리스트 조회
+	    // 該当するポストに作成されているリプライのリスト情報を抽出して取得ポストポスト
 	    List<CommentsEntity> comments = commentRepository.findByFeedAndUser(feed, user);
 
-	    // 댓글들을 DTO로 변환
+	    // 作成されているリプライの情報をDTOに変換
 	    List<CommentsDTO> commentsDTOList = comments.stream()
 	            .map(c -> new CommentsDTO(
 	            		c.getCommentsid(),
@@ -184,19 +184,19 @@ public class FeedServiceImpl implements FeedService {
 	            ))
 	            .collect(Collectors.toList());
 
-	    // 피드와 댓글 정보를 FeedWithCommentsDTO로 묶어서 반환
+	    // ポストとリプライの情報をFeedWithCommentsDTOにして返還
 	    return new FeedWithCommentsDTO(feedDTO, commentsDTOList);
 	}
 	
-	// 댓글 추가
+	// リプライ追加
 	@Override
 	public List<CommentsDTO> addCommentToFeed(CommentsDTO commentsDTO) {
-		// 사용자와 피드 조회
+		// ユーザーとポストの情報を抽出して取得ポストポスト
         UserEntity user = userRepository.findById(commentsDTO.getUserid())
-				.orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+				.orElseThrow(() -> new RuntimeException("ユーザーが見つかりません。"));
 		
 		FeedEntity feed = feedRepository.findById(commentsDTO.getFeedid())
-			        .orElseThrow(() -> new RuntimeException("피드를 찾을 수 없습니다."));
+			        .orElseThrow(() -> new RuntimeException("ポストが見つかりません。"));
 		
 		CommentsEntity comment = CommentsEntity.builder()
 		    .user(user)
@@ -205,28 +205,28 @@ public class FeedServiceImpl implements FeedService {
 		    .commentscreatedate(LocalDateTime.now())
 		    .build();
 		
-		// 댓글을 저장
+		// リプライを追加
 		commentRepository.save(comment);
 		
-		// 피드에 댓글 추가 후 피드 저장
+		// ポストにリプライの情報を追加
 		feed.addComment(comment);
-		// 피드를 다시 저장해서 댓글 목록을 업데이트
+		// ポストの情報をアップデートしてリプライのリスト情報をアップデート
 		feedRepository.save(feed);  
 		
-		// 본인의 피드에 본인이 쓴 댓글은 알람테이블에 집어넣지 않는다.
+		// ポストを作成したユーザーが本人のポストに作成したリプライはアラームテーブルに追加しない
 		if(!user.getUserid().equals(feed.getKawaiinuuserfeedid().getUserid())) {
 			alarmService.createLikeOrCommentAlarm(user.getUserid(), feed, 'C');			
 		}
 		
-		// 피드에 달린 모든 댓글을 조회
+		// ポストに作成されている全リプライの情報を抽出して取得ポストポスト
 	    List<CommentsEntity> allComments = commentRepository.findByFeed(feed);
 
-	    // 댓글들을 DTO로 변환하여 리스트로 반환
+	    // 全リプライDTOに変換してリストにして返還
 	    List<CommentsDTO> commentsDTOList = allComments.stream()
 	            .map(c -> new CommentsDTO(
 	            		c.getCommentsid(),
 	                    c.getFeed().getFeedid(),
-	                    c.getUser().getUsernickname(),  // 유저 닉네임 추가
+	                    c.getUser().getUsernickname(),
 	                    c.getUser().getUserid(),
 	                    c.getComments(),
 	                    c.getCommentscreatedate()
@@ -235,21 +235,19 @@ public class FeedServiceImpl implements FeedService {
 	    return commentsDTOList;
 	}
 	
-	// 댓글 수정
+	// リプライ修正(アップデート)
 	@Override
 	public CommentsDTO updateComment(CommentsDTO commentsDTO) {
-	    // 댓글 조회
 	    CommentsEntity comment = commentRepository.findById(commentsDTO.getCommentsid())
-	            .orElseThrow(() -> new RuntimeException("댓글을 찾을 수 없습니다."));
+	            .orElseThrow(() -> new RuntimeException("リプライが見つかりません。"));
 
-	    // 댓글 내용 업데이트
+	    // リプライの内容アップデート
 	    comment.setComments(commentsDTO.getComments());
-	    comment.setCommentscreatedate(LocalDateTime.now()); // 수정 시간 업데이트
+	    comment.setCommentscreatedate(LocalDateTime.now()); // 修正時間アップデート
 
-	    // 댓글 저장
 	    commentRepository.save(comment);
 
-	    // 업데이트된 댓글을 DTO로 변환하여 반환
+	    // アップデートされたリプライをDTOにして返還
 	    return new CommentsDTO(
 	            comment.getCommentsid(),
 	            comment.getFeed().getFeedid(),
@@ -260,11 +258,11 @@ public class FeedServiceImpl implements FeedService {
 	    );
 	}
 	
-	// 댓글 조회
+	// リプライ情報を抽出して取得
 	@Override
 	public List<CommentsDTO> getComment(String feedId) {
 		FeedEntity feed = feedRepository.findById(feedId)
-		        .orElseThrow(() -> new RuntimeException("피드를 찾을 수 없습니다."));
+		        .orElseThrow(() -> new RuntimeException("ポストが見つかりません。"));
 		
 		List<CommentsEntity> commentEntity = commentRepository.findByFeed(feed);
 		
@@ -281,76 +279,76 @@ public class FeedServiceImpl implements FeedService {
 				    .collect(Collectors.toList());
 	}
 
-	// 댓글 삭제
+	// リプライ削除
 	@Override
 	@Transactional
 	public void deleteComment(CommentsDTO commentsDTO) {		
         CommentsEntity commentsEntity = commentRepository.findById(commentsDTO.getCommentsid())
-        		.orElseThrow(() -> new RuntimeException("코멘트를 찾을 수 없습니다."));
+        		.orElseThrow(() -> new RuntimeException("リプライが見つかりません。"));
 
         commentRepository.delete(commentsEntity);
 	}
 	
-	// 좋아요 및 좋아요 취소
+	// いいね＆いいねキャンセル
 	@Override
 	@Transactional
 	public void toggleLike(String userid, String feedid) {
-	    // 사용자와 피드 조회
+	    // ユーザーとポストの情報を抽出して取得
 	    UserEntity user = userRepository.findById(userid)
-	            .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+	            .orElseThrow(() -> new RuntimeException("ユーザーが見つかりません。"));
 	    FeedEntity feed = feedRepository.findById(feedid)
-	            .orElseThrow(() -> new RuntimeException("피드를 찾을 수 없습니다."));
+	            .orElseThrow(() -> new RuntimeException("ポストが見つかりません。"));
 
-	    // 사용자가 해당 피드에 좋아요를 눌렀는지 확인
+	    // ユーザーが該当するポストにいいねを押下したかを確認
 	    boolean alreadyLiked = feedLikeRepository.existsByUserAndFeed(user, feed);
 
 	    if (alreadyLiked) {
-	        // 좋아요 취소
+	        // いいねキャンセル
 	        feedLikeRepository.deleteByUserAndFeed(user, feed);
-	        feed.setFeedlike(feed.getFeedlike() - 1);  // 피드의 좋아요 수 감소
+	        feed.setFeedlike(feed.getFeedlike() - 1);  // ポストのいいね数が下がる
 	    } else {
-	        // 좋아요 추가
+	        // いいね追加
 	        FeedLikeEntity feedLike = new FeedLikeEntity();
 	        feedLike.setUser(user);
 	        feedLike.setFeed(feed);
 	        feedLike.setLikedate(LocalDateTime.now());
 	        feedLikeRepository.save(feedLike);
-	        feed.setFeedlike(feed.getFeedlike() + 1);  // 피드의 좋아요 수 증가
+	        feed.setFeedlike(feed.getFeedlike() + 1);  // ポストのいいねの数が上がる
 	    }
 
-	    // 피드 업데이트
+	    // ポストアップデート
 	    feedRepository.save(feed);
 	    
-	    // 본인의 피드에 본인이 쓴 댓글은 알람테이블에 집어넣지 않는다.
+	    // ポストを作成したユーザーが本人のポストに作成したリプライはアラームテーブルに追加しない
  		if(!user.getUserid().equals(feed.getKawaiinuuserfeedid().getUserid())) {
  			alarmService.createLikeOrCommentAlarm(user.getUserid(), feed, 'L');			
  		}
 	}
 	
-	// 좋아요 갯수 조회
+	// いいねの数の情報を抽出して取得
 	@Override
 	public long getFeedLikeCount(String feedid) {
 	    FeedEntity feed = feedRepository.findById(feedid)
-	            .orElseThrow(() -> new RuntimeException("피드를 찾을 수 없습니다."));
-	    return feedLikeRepository.countByFeed(feed);  // 피드에 달린 총 좋아요 수 반환
+	            .orElseThrow(() -> new RuntimeException("ポストが見つかりません。"));
+	    return feedLikeRepository.countByFeed(feed);  // ポストに作成されているいいねの総個数を返還
 	}
 	
 	
-	// 피드 ID로 피드 조회
+	// ポストIDでポストの情報を抽出して取得
 	@Override
     public FeedEntity findFeedById(String feedId) {
         return feedRepository.findById(feedId)
-                .orElseThrow(() -> new RuntimeException("피드를 찾을 수 없습니다."));
+                .orElseThrow(() -> new RuntimeException("ポストが見つかりません。"));
     }
 
-    // 피드 상태 저장
+    // ポストの状態をアップデート
 	@Override
     public void saveFeed(FeedEntity feedEntity) {
-        feedRepository.save(feedEntity); // 피드 저장
+        feedRepository.save(feedEntity);
     }
 	
-	// Timestamp를 LocalDateTime으로 변환하는 유틸리티 메소드
+	// TimestampをLocalDateTimeに変換するユーティリティメソッド
 	private LocalDateTime convertToLocalDateTime(Timestamp timestamp) {
-	    return timestamp.toLocalDateTime();  // Timestamp를 LocalDateTime으로 변환
+	    return timestamp.toLocalDateTime();  // TimestampをLocalDateTimeに変換
 	}
 }

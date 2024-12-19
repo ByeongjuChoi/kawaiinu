@@ -18,21 +18,21 @@ public class UserDTO {
 
 	private String userid;
 	
-	@NotBlank(message = "닉네임을 입력해주세요.")
+	@NotBlank(message = "ニックネームを入力して下さい。")
 	@Size(min=2, max=10, message = "닉네임은 2~10 글자여야 합니다.")
 	private String usernickname;
 	
-	@NotBlank(message = "이메일을 입력해주세요.")
+	@NotBlank(message = "メールを入力して下さい。")
 	private String useremail;
 	
-	@NotBlank(message = "나이를 입력해주세요.")
+	@NotBlank(message = "年齢を入力して下さい。")
 	private String userage;
 	
-	@NotBlank(message = "성별을 입력해주세요.")
+	@NotBlank(message = "性別を入力して下さい。")
 	private String usergender;
 	
-	@Size(min=0, max=30, message = "30자까지 등록 가능합니다.")
+	@Size(min=0, max=30, message = "30文字まで入力可能です。")
 	private String userintroduce;
 	
-	private List<UserPetDTO> userpets = new ArrayList<>(); // 유저의 펫 정보 포함
+	private List<UserPetDTO> userpets = new ArrayList<>(); // ユーザーのペット情報を含む
 }

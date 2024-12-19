@@ -42,23 +42,23 @@ public class FeedEntity {
 	private String feedid;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userid") // 외래 키를 가리키는 칼럼명 지정
+    @JoinColumn(name = "userid") // 外来キーを表すコラム名
     private UserEntity kawaiinuuserfeedid;
     
 	@Column(name = "picture")
-	private String picture;		// 사진 (타입 미정)
+	private String picture;		
 	
 	@Column(name = "feedlike")
-	private int feedlike;		// 좋아요 수
+	private int feedlike;		// いいねの数
 	
 	@Column(name = "feedcreatedate")
-	private LocalDateTime feedcreatedate;	// 피드 생성 날짜	타입 date로 바꿔야함
+	private LocalDateTime feedcreatedate;	// ポストの生成日、タイプをdateに変更しなければならない
 	
 	@Column(name = "feedstatus")
-	private int feedstatus;		// 게시글 상태		0 비공개, 1 공개
+	private int feedstatus;		// ポストの状態0非公開、1公開
 	
 	@OneToMany(mappedBy = "feed", fetch = FetchType.EAGER)
-	private List<CommentsEntity> comments = new ArrayList<>();		// 코멘트	
+	private List<CommentsEntity> comments = new ArrayList<>();		// リプライ
 	
     @OneToMany(mappedBy = "feed", fetch = FetchType.EAGER)
     private List<StrollCountEntity> strollCounts = new ArrayList<>();
@@ -67,12 +67,12 @@ public class FeedEntity {
 		this.kawaiinuuserfeedid = user;
 	}
 	
-	// 댓글을 추가하는 메서드 (편리하게 추가할 수 있음)
+	// リプライを追加するメソッド(便利に追加出来る)
 	public void addComment(CommentsEntity comment) {
 		this.comments.add(comment);
 	}
 	
-	// 피드 상태를 변경하는 메서드
+	// ポストの状態を変更するメソッド
     public void setFeedStatus(int feedstatus) {
         this.feedstatus = feedstatus;
     }

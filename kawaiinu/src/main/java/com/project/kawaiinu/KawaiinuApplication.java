@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class KawaiinuApplication {
 
 	public static void main(String[] args) {
-		// TimeZone을 Asia/Seoul로 설정
+		// TimeZoneをAsia/Seoulに設定
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
 		SpringApplication.run(KawaiinuApplication.class, args);
 	}

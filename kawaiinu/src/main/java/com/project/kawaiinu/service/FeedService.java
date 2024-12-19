@@ -19,10 +19,8 @@ public interface FeedService {
 	public long getFeedLikeCount(String feedid);
 	public void deleteFeed(String feedid);
 	public void deleteComment(CommentsDTO commentsDTO);
-	
 	public void saveFeed(FeedEntity feedEntity);
 	public FeedEntity findFeedById(String feedId);
 	public List<CommentsDTO> getComment(String feedId);
-	
 	public CommentsDTO updateComment(CommentsDTO commentsDTO);
 }

@@ -35,16 +35,16 @@ public class StrollCountEntity {
     private Long strollId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userid")  // 외래키로 UserEntity와 연관
+    @JoinColumn(name = "userid")  // 外来キーでUserEntityと連関される
     private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "feedid")  // FeedEntity와 연관
-    private FeedEntity feed;  // 해당 StrollCountEntity가 연관된 FeedEntity
+    @JoinColumn(name = "feedid")  // 同じくFeedEntityと連関される
+    private FeedEntity feed;  // 該当のStrollCountEntityが連関されたFeedEntity
 
     @Column(name = "stroll_date", nullable = false)
-    private LocalDateTime strollDate;  // 산책 날짜
+    private LocalDateTime strollDate;  // 散歩した日
 
     @Column(name = "is_strolled", nullable = false)
-    private String isStrolled;  // 산책 여부 ('y' or 'n')
+    private String isStrolled;  // 散歩の存否('y' or 'n')
 }

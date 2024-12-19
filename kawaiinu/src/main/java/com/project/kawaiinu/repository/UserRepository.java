@@ -13,8 +13,8 @@ import com.project.kawaiinu.entity.UserEntity;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, String>{
-	Optional<UserEntity> findByUseremail(String useremail); // 이메일로 유저 찾기
-	boolean existsByUsernickname(String usernickname); // 닉네임 중복 검사
+	Optional<UserEntity> findByUseremail(String useremail); // メールでユーザーの情報を抽出して取得
+	boolean existsByUsernickname(String usernickname); // ニックネームの重複検査
 	
 	@Query("SELECT u FROM UserEntity u WHERE u.useremail = :useremail")
 	List<UserEntity> userInfoSelect(@Param("useremail") String useremail);

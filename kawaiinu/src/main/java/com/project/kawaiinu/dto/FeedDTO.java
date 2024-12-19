@@ -16,19 +16,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FeedDTO {
 	
-	private String feedid;	// 피드 아이디
-	private String userid;	// 유저 아이디
+	private String feedid;	// ポストid
+	private String userid;	// ユーザーid
 	
-	private String picture;
+	private String picture;	// 写真
 	
-	private int feedlike;
+	private int feedlike;	// ポストのいいねの数
 	
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")  // 날짜 형식 지정
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")  // 日日の形式を指定
 	private LocalDateTime feedcreatedate;
 	
-	private int feedstatus;		// 0활성화, 1비활성화
+	private int feedstatus;		// 0活性化、1非活性化
 	
-	// 생성자 추가
+	// 생성자 추가生成者
     public FeedDTO(String feedid, LocalDateTime feedcreatedate, Integer feedlike, int feedstatus, String picture, String userid) {
         this.feedid = feedid;
         this.feedcreatedate = feedcreatedate;

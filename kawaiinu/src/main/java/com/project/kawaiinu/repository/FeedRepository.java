@@ -10,7 +10,7 @@ import com.project.kawaiinu.entity.FeedEntity;
 
 public interface FeedRepository extends JpaRepository<FeedEntity, String> {
 
-	// 내 피드 정보 조회
+	// ユーザーのポストの情報を抽出して取得
 	@Query(value = "SELECT a.feedid "
 			+ "   ,a.feedcreatedate "
 			+ "   ,a.feedlike "
@@ -22,7 +22,7 @@ public interface FeedRepository extends JpaRepository<FeedEntity, String> {
 	 		, nativeQuery = true)
 	List<Object[]> myFeedSelect(@Param("userid") String userid);
 	
-	// 피드 전체 불러오기
+	// 全ポストの情報を抽出して取得
 	@Query(value = """
 				SELECT
 			        	u.userid AS userid,

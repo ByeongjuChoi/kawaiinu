@@ -33,7 +33,7 @@ public class UserPetEntity {
 	private Long petid;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userid", nullable = false) // 외래 키를 가리키는 칼럼명 지정
+    @JoinColumn(name = "userid", nullable = false) // 外来キーを表すコラム名を指定
     private UserEntity kawaiinuuserid;
     
 	@Column(name = "petname")
